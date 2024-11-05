@@ -24,7 +24,49 @@
 #   add a blank row to board  
 
 import numpy as np
+
+class Block:
+    '''
+    Class object that dictates how block types interact with lasers.
+
+    Opaque blocks - laser stops entirely at this block
+    Reflect block - laser goes through and makes 90 degree angle
+    Refract block - laser makes a 90 degree angle
     
+    '''
+    def __init__(self):
+        pass
+
+    def interactions(self):
+        #if block_type = something, laser reacts a certain way
+        pass
+        
+    def isFixed(self):
+        pass    
+
+class OpaqueBlock(Block):
+    def interactions(self, laser_direction):
+        return None #Laser stops at block
+    
+class ReflectBlock(Block):
+    def interactions(self, laser_direction):
+        #Laser goes through in same direction and reflects at 90 degrees
+        dx, dy = laser_direction
+        slope = dy / dx
+        new_slope = - dx / dy
+
+
+        return (dx,dy), (dy, -dx) #Two returns: laser going in same direction and slope flipped by 90 degrees
+    
+class RefractBlock(Block):
+    #Laser refracts 90 degrees
+    def interactions(self, laser_direction):
+        dx, dy = laser_direction 
+
+        return (dy, -dx) #Laser refracts 90 degrees from original direction
+
+
+
 class GameBoard:
     ''' 
     Class to read, initialize, and create game board based on the file given.
@@ -57,7 +99,8 @@ class GameBoard:
 
         ---
         Returns
-        None
+        np.array(self_grid) : np array
+            NumPy array that stores the game board.
         '''
         with open(self.grid_file) as f: #Open the bff file in read mode and set conditions for reading the grid or the info
             read_grid = False
@@ -96,22 +139,24 @@ class GameBoard:
 
         for block in self.grid: #Sets fixed block types on board
             if block == 'A':
-                blocktype = 'fixed_reflect'
+                block_type = 'fixed_reflect'
             elif block == 'B':
-                blocktype = 'fixed_opaque'
+                block_type = 'fixed_opaque'
             elif block == 'C':
-                blocktype = 'fixed_refract'
+                block_type = 'fixed_refract'
             elif block == 'x':
-                blocktype = 'no_block'
+                block_type = 'no_block'
             elif block == 'o':
-                blocktype = 'block_allowed'
+                block_type = 'block_allowed'
+        
+        self.grid = np.array(self.grid)
 
-        return np.array(self.grid) #ERROR: Grid is being read into array twice?
+        return self.grid #ERROR: Grid is being read into array twice?
 
         
 
     def __str__(self):
-        grid_str = np.array2string(np.array(self.grid))
+        grid_str = np.array2string(self.grid, separator=', ')
         block_dict_str = ', '.join(f"{k}: {v}" for k, v in self.block_dict.items())
         lasers_str = ', '.join(str(coord) for coord in self.laser_pts)
         solutions_str = ', '.join(str(coord) for coord in self.soln_pts)
@@ -121,21 +166,12 @@ class GameBoard:
                 f"Solution Points: {solutions_str}]\n"
                 )
 
-class Block:
-    '''
-    Class object that defines blocks based on their type, position, and fixed/non-fixed quality.
-    
-    '''
-    
-    def __init__(self, block_type, position): 
-        self.block_type = block_type
-        self.position = position
 
-    def isFixed(self):
-        '''Define if blocks are fixed, return True if so'''
 
-    def _str__(self):
-        return "Block type = {self.block_type}, block position = {self.position}"        
+
+
+
+      
     
 
 
