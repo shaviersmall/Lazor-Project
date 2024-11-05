@@ -65,9 +65,7 @@ class RefractBlock(Block):
 
         return (dy, -dx) #Laser refracts 90 degrees from original direction
 
-
-
-class GameBoard:
+class GameBoard: #Remaining work: update GameBoard to take in block types
     ''' 
     Class to read, initialize, and create game board based on the file given.
 
@@ -151,7 +149,7 @@ class GameBoard:
         
         self.grid = np.array(self.grid)
 
-        return self.grid #ERROR: Grid is being read into array twice?
+        return self.grid 
 
         
 
@@ -167,19 +165,31 @@ class GameBoard:
                 )
 
 
-
-
-
-
-      
-    
-
-
 class Solver:
-    pass
+    def __init__(self, grid):
+        grid = self.grid
+
+    def move_blocks(self):
+        pass
+        #initialize positions of open spaces and amounts of movable blocks
+
+    def move_laser(self):
+        pass
+        #move laser based on fixed and movable block types -> x + dx, y + dy based on Block subclass
+
+    def solve(self): #implement some type of algo (depth first search?) to move the blocks so that the lasers bounce off and hit solution points
+        pass 
+        #probably call on read_board again to print the solution board
+        #include a return False if board cannot be solved and error messages
+
+    def check_solution(self): #if laser_pos == soln_pos
+        pass
+
         
 
 if __name__ == '__main__':
     x = GameBoard('tiny_5.bff')
     print(x)
+
+    #solution = Solve('tiny_5.bff')
     
