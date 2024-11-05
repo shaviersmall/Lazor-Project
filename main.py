@@ -1,28 +1,3 @@
-# 3 kinds of blocks
-# opaque
-# reflect
-# refract
-
-# Block
-# field: position
-# field: isFixed
-
-# Game
-
-# ParseInput()
-# ...
-# if line says "GRID START", call ReadInBoard()
-# ...
-
-# ReadInBoard()
-# create new list to store board rows
-# first row tells us how many cols board has
-# while there are lines to read... (i.e. while line is not "GRID STOP")
-#   create a list for the board row
-#   read in the input row string
-#   parse each character in input row and populate board row
-#   add a blank row to board  
-
 import numpy as np
 
 class Block:
