@@ -1,6 +1,7 @@
 Lazor Project 
 
 Group Members:
+
 Shavier Small (ssmall16@jhu.edu)
 
 Gabriele Pierre (gpierre6@jhu.edu)
