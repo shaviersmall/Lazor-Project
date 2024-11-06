@@ -39,12 +39,19 @@ Image 3
 
 
 White Block: Reflect block
+
 Black Block: Opaque block
+
 Red Block: Refract block
+
 Lighter Gray Block: The location where the block can be placed
+
 Darker Gray Block: The location where the block cannot be placed.
+
 Hollow Red Circle: The end point the laser needs to pass.
+
 Solid Red Circle: The place where the laser is emitted.
+
 Red Line: The optical path of the laser.
 
 6. File generation
