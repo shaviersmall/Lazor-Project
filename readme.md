@@ -1,13 +1,14 @@
 Lazor Project 
 
 Group Members:
-Shavier Small (please insert you github profile link)
-Gabriele Pierre (please insert you github profile link)
-Vasuudhaa Sonawane (please insert you github profile link)
+Shavier Small (ssmall16@jhu.edu)
+Gabriele Pierre (gpierre6@jhu.edu)
+Vasuudhaa Sonawane (vsonawa1@jh.edu)
 
 
 
 1. Introduction
+
 Lazor is a puzzle game for Android and iOS that challenges players to guide a laser beam through specific target points by strategically placing square blocks. There are three types of blocks to work with:
 
 Reflect: A white block that bounces the laser beam.
@@ -19,9 +20,34 @@ In the gameâ€™s basic free version, players get only three hints. This projectâ€
 
 2. Methodology
 
-3. Code
+The grid should be placed between GRID START and GRID STOP.
+A: Reflect block
+B: Opaque block
+C: Refract block
+L: The first two numbers stand for the laser's start coordinates, the last two numbers stand for the laser's direction.
+P: The positions that lazers need to intersect.
 
-4. File generation
+
+
+4. Understanding the Code
+
+Image 1
+
+Image 2
+
+Image 3
+
+
+White Block: Reflect block
+Black Block: Opaque block
+Red Block: Refract block
+Lighter Gray Block: The location where the block can be placed
+Darker Gray Block: The location where the block cannot be placed.
+Hollow Red Circle: The end point the laser needs to pass.
+Solid Red Circle: The place where the laser is emitted.
+Red Line: The optical path of the laser.
+
+6. File generation
 
 
 
