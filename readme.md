@@ -60,7 +60,13 @@ Red Line: The optical path of the laser.
 5. File generation
 Codes were written in parts and assembled into a final file (final name of the file) All other codes are in the subsequent branches.
 
+6. Contribution: We all cooperate to finish the rest of the project together
 
+Shavier: Identifies logic for class GameBoard and updated it
+
+Gabriele: Verification (bff files), Validation (Verified logic for the code), 
+
+Vasuudhaa: Input, output of code, Readme.md (description of lazor project), Validation (Verified bff files)
 
 
 
