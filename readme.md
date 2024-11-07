@@ -69,7 +69,7 @@ Shavier: Identifies logic for class GameBoard and(updating it), Methodology (Ide
 
 Gabriele: Software (Implemented code for refract block), Verification (bff files), Validation (Verified logic for the code) 
 
-Vasuudhaa: Readme.md (description of lazor project), Software (Implemented code for reading BFF files), Validation (Verified edge cases)
+Vasuudhaa: Readme.md (description of lazor project), Software (verified speed of code), Validation (Verified edge cases)
 
 
 
