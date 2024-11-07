@@ -67,7 +67,7 @@ It takes xx seconds to run the code
 
 Shavier: Identifies logic for class GameBoard and(updating it), wrote, modified and verified main.py
 
-Gabriele: Verification (bff files), Validation (Verified logic for the code), 
+Gabriele: Verification (bff files), Validation (Verified logic for the code) 
 
 Vasuudhaa: Input, output of code, Readme.md (description of lazor project), Validation (Verified bff files)
 
