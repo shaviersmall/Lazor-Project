@@ -1,0 +1,16 @@
+def get_user_filename():
+    """Prompts the user for a filename and returns it."""
+    while True:
+        filename = input("Enter the filename (including extension): ")
+        if filename:
+            return filename
+        else:
+            print("Please enter a filename.")
+
+if __name__ == '__main__':
+
+    fname = get_user_filename()
+    solution_generator(fname, 500000)
+
+    #The following line performs unit tests
+    #unittest.main()
