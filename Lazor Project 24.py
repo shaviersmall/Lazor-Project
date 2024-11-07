@@ -1,6 +1,7 @@
 import numpy as np
 import time
 from itertools import permutations
+from copy import deepcopy
 
 class Block:
     '''
@@ -111,33 +112,26 @@ class GameBoard:
                     read_blocks = True
                     continue
                 elif line.startswith('L'):
-                    read_blocks == False
-                    line.split()
                     pts = list(map(int, line[1:].strip().split()))
                     self.laser_pts.append(((pts[0], pts[1]), (pts[2], pts[3])))
-                    continue
                 elif line.startswith('P'):
-                    line.split()
-                    self.soln_pts.append((line[2], line[4]))
+                    pts = list(map(int, line[1:].strip().split()))
+                    self.soln_pts.append((pts[0], pts[1]))
 
                 if read_grid == True: #When between GRID START and GRID STOP, appends each line to the grid
                     line.split()
                     row = []
                     for char in line:
                         if char == 'A':
-                            row.append(ReflectBlock)
-                            
+                            row.append(ReflectBlock())
                         elif char == 'B':
-                            row.append(OpaqueBlock)
-
+                            row.append(OpaqueBlock())
                         elif char == 'C':
-                            row.append(RefractBlock)
-
+                            row.append(RefractBlock())
                         elif char == 'o': 
-                            row.append(OBlock)
-
+                            row.append(OBlock())
                         elif char == 'x':
-                            row.append(XBlock)
+                            row.append(XBlock())
 
                     self.grid.append(row)
 
@@ -145,9 +139,8 @@ class GameBoard:
                     block_def = line.split()
                     if len(block_def) == 2:
                         block_type = block_def[0]
-                        counter = block_def[1]
-                        self.block_dict[block_type] = counter #Saves as {block type : num blocks}, e.g. {A : 3}
-
+                        count = int(block_def[1])  # Convert count to integer here
+                        self.block_dict[block_type] = count
         
         self.grid = np.array(self.grid)
 
@@ -170,12 +163,13 @@ class GameBoard:
 class Solver:
     def __init__(self, game_board):
        self.grid = game_board.grid
-       self.blocks = game_board.blocks
+       self.blocks = game_board.block_dict
        self.laser_pts = game_board.laser_pts
        self.soln_pts = game_board.soln_pts 
 
     def get_open_positions(self):
-        open_positions = [(x, y) for y, row in enumerate(self.grid) for x, cell in enumerate(row) if cell == 'o']
+        open_positions = [(x, y) for y, row in enumerate(self.grid) for x, 
+                          cell in enumerate(row) if isinstance(cell, OBlock)]
         return open_positions
 
     def generate_block_combinations(self):
@@ -187,32 +181,39 @@ class Solver:
     def move_blocks(self):
         open_positions = self.get_open_positions()
         blocks_to_place = self.generate_block_combinations()
+        
+        # Map block type strings to their respective classes
+        block_type_map = {'A': ReflectBlock, 'B': OpaqueBlock, 'C': RefractBlock}
+        
         for block_placement in permutations(open_positions, len(blocks_to_place)):
             config = {}
             for block, position in zip(blocks_to_place, block_placement):
-                config[position] = block
+                config[position] = block_type_map[block]  # Use class reference instead of string
             yield config
 
     def apply_configuration(self, config):
-        board_copy = self.grid.copy()
+        board_copy = deepcopy(self.grid)
         for pos, block_type in config.items():
-            board_copy[pos[1]][pos[0]] = block_type
+            board_copy[pos[1]][pos[0]] = block_type()  # Instantiate the block
         return board_copy
 
     def move_laser(self, start_pos, direction, board):
         x, y = start_pos
         dx, dy = direction
-        path = []
+        path = set()
+    
         while (0 <= x < board.shape[1]) and (0 <= y < board.shape[0]):
-            path.append((x, y))
+            path.add((x, y))
             current_block = board[y][x]
-            if current_block == 'B':  # Opaque
+            
+            if isinstance(current_block, OpaqueBlock):  # Laser stops at opaque block
                 break
-            elif current_block == 'A':  # Reflect
+            elif isinstance(current_block, ReflectBlock):  # Reflects laser at 90 degrees
                 dx, dy = -dy, dx
-            elif current_block == 'C':  # Refract
-                dx, dy = -dy, dx
-            x, y = x + dx, y + dy
+            elif isinstance(current_block, RefractBlock):  # Refracts and reflects
+                path.update(self.move_laser((x, y), (-dy, dx), board))  # Continue refracted beam
+            x, y = x + dx, y + dy  # Move forward
+    
         return path
 
     def solve(self):
@@ -228,40 +229,31 @@ class Solver:
         print("No solution found.")
         return None, None
 
-    def check_solution(self): #if laser_pos == soln_pos
-        return all(point in hit_points for point in self.grid.soln_pts)
+    def check_solution(self, hit_points):
+        return all(point in hit_points for point in self.soln_pts)
 
-    def save_solution(self, solution_grid, block_config, output_file='solution.bff'):
-        """
-        Save the solution configuration to a .bff file.
+def save_solution(self, solution_grid, block_config, output_file='solution.bff'):
+    with open(output_file, 'w') as f:
+        f.write("# Solution File\n\n")
+        f.write("GRID START\n")
+        for row in solution_grid:
+            f.write(" ".join(type(cell).__name__[0] if isinstance(cell, Block) 
+                             else cell for cell in row) + "\n")
+        f.write("GRID STOP\n\n")
+    
+        # Write block counts
+        for block_type, count in self.blocks.items():
+            f.write(f"{block_type} {count}\n")
+        
+        # Write laser points
+        for laser, direction in self.laser_pts:
+            f.write(f"L {laser[0]} {laser[1]} {direction[0]} {direction[1]}\n")
+        
+        # Write solution points
+        for target in self.soln_pts:
+            f.write(f"P {target[0]} {target[1]}\n")
 
-        Parameters:
-        - solution_grid: The grid with the blocks placed for the solution.
-        - block_config: Dictionary of block positions and types.
-        - output_file: Filename for the saved solution.
-        """
-        with open(output_file, 'w') as f:
-            f.write("# Solution File\n\n")
-            
-            # Write the grid
-            f.write("GRID START\n")
-            for row in solution_grid:
-                f.write(" ".join(row) + "\n")
-            f.write("GRID STOP\n\n")
-            
-            # Write block counts (if needed)
-            for block_type, count in self.blocks.items():
-                f.write(f"{block_type} {count}\n")
-            
-            # Write laser points
-            for laser, direction in self.laser_pts:
-                f.write(f"L {laser[0]} {laser[1]} {direction[0]} {direction[1]}\n")
-            
-            # Write solution points
-            for target in self.soln_pts:
-                f.write(f"P {target[0]} {target[1]}\n")
-
-        print(f"Solution saved to {output_file}")
+    print(f"Solution saved to {output_file}")
 
     
 
