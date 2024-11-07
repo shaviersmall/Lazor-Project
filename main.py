@@ -1,4 +1,6 @@
 import numpy as np
+import time
+start = time.time()
 
 class Block:
     '''
@@ -166,4 +168,7 @@ if __name__ == '__main__':
     print(x)
 
     #solution = Solve('tiny_5.bff')
+
+end = time.time() - start
+print(end)
     
