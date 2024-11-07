@@ -2,7 +2,8 @@ import numpy as np
 
 class Block:
     '''
-    Class object that dictates how block types interact with lasers.
+    Class object that dictates how block types interact with lasers. Also includes methods for whether
+    they are fixed, if they are cells that hold blocks, and their position on the board.
 
     Opaque blocks - laser stops entirely at this block
     Reflect block - laser goes through and makes 90 degree angle
@@ -18,6 +19,9 @@ class Block:
         
     def isFixed(self):
         pass    
+    
+    def holdsBlock(self):
+        pass
 
 class OpaqueBlock(Block):
     def interactions(self, laser_direction):
@@ -40,7 +44,21 @@ class RefractBlock(Block):
 
         return (dy, -dx) #Laser refracts 90 degrees from original direction
 
-class GameBoard: #Remaining work: update GameBoard to take in block types
+class OBlock(Block):
+    def interactions(self, laser_direction):
+        return laser_direction #Laser continues through empty block
+    
+    def holdsBlock(self):
+        return True
+    
+class XBlock(Block):
+    def interactions(self, laser_direction):
+        return laser_direction
+    
+    def holdsBlock(self): 
+        return False
+
+class GameBoard: 
     ''' 
     Class to read, initialize, and create game board based on the file given.
 
@@ -101,7 +119,25 @@ class GameBoard: #Remaining work: update GameBoard to take in block types
                     self.soln_pts.append((line[2], line[4]))
 
                 if read_grid == True: #When between GRID START and GRID STOP, appends each line to the grid
-                    self.grid.append(line.split())
+                    line.split()
+                    row = []
+                    for char in line:
+                        if char == 'A':
+                            row.append(ReflectBlock)
+                            
+                        elif char == 'B':
+                            row.append(OpaqueBlock)
+
+                        elif char == 'C':
+                            row.append(RefractBlock)
+
+                        elif char == 'o': 
+                            row.append(OBlock)
+
+                        elif char == 'x':
+                            row.append(XBlock)
+
+                    self.grid.append(row)
 
                 if read_blocks == True: 
                     block_def = line.split()
@@ -110,17 +146,6 @@ class GameBoard: #Remaining work: update GameBoard to take in block types
                         counter = block_def[1]
                         self.block_dict[block_type] = counter #Saves as {block type : num blocks}, e.g. {A : 3}
 
-        for block in self.grid: #Sets fixed block types on board
-            if block == 'A':
-                block_type = 'fixed_reflect'
-            elif block == 'B':
-                block_type = 'fixed_opaque'
-            elif block == 'C':
-                block_type = 'fixed_refract'
-            elif block == 'x':
-                block_type = 'no_block'
-            elif block == 'o':
-                block_type = 'block_allowed'
         
         self.grid = np.array(self.grid)
 
@@ -159,12 +184,8 @@ class Solver:
 
     def check_solution(self): #if laser_pos == soln_pos
         pass
-
         
-
 if __name__ == '__main__':
     x = GameBoard('tiny_5.bff')
     print(x)
-
     #solution = Solve('tiny_5.bff')
-    
