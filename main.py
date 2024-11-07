@@ -161,7 +161,6 @@ class Solver:
         pass
 
         
-
 if __name__ == '__main__':
     x = GameBoard('tiny_5.bff')
     print(x)
