@@ -198,12 +198,46 @@ class Solver:
                 hit_points.update(self.move_laser(laser_start, direction, board))
             if all(target in hit_points for target in self.soln_pts):
                 print("Solution found!")
+                self.save_solution(board, block_config)  # Call save_solution here
                 return board, block_config
         print("No solution found.")
         return None, None
 
     def check_solution(self): #if laser_pos == soln_pos
         return all(point in hit_points for point in self.grid.soln_pts)
+
+    def save_solution(self, solution_grid, block_config, output_file='solution.bff'):
+        """
+        Save the solution configuration to a .bff file.
+
+        Parameters:
+        - solution_grid: The grid with the blocks placed for the solution.
+        - block_config: Dictionary of block positions and types.
+        - output_file: Filename for the saved solution.
+        """
+        with open(output_file, 'w') as f:
+            f.write("# Solution File\n\n")
+            
+            # Write the grid
+            f.write("GRID START\n")
+            for row in solution_grid:
+                f.write(" ".join(row) + "\n")
+            f.write("GRID STOP\n\n")
+            
+            # Write block counts (if needed)
+            for block_type, count in self.blocks.items():
+                f.write(f"{block_type} {count}\n")
+            
+            # Write laser points
+            for laser, direction in self.laser_pts:
+                f.write(f"L {laser[0]} {laser[1]} {direction[0]} {direction[1]}\n")
+            
+            # Write solution points
+            for target in self.soln_pts:
+                f.write(f"P {target[0]} {target[1]}\n")
+
+        print(f"Solution saved to {output_file}")
+
     
 
 if __name__ == '__main__':
