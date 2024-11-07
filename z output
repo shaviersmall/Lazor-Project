@@ -12,5 +12,5 @@ if __name__ == '__main__':
     fname = get_user_filename()
     solution_generator(fname, 500000)
 
-	# The following line performs unit tests
+    #The following line performs unit tests
     #unittest.main()
