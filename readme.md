@@ -49,23 +49,23 @@ Red Block: Refract block
 
 Lighter Gray Block: The location where the block can be placed
 
-Darker Gray Block: The location where the block cannot be placed.
+Darker Gray Block: The location where the block cannot be placed
 
-Hollow Red Circle: The end point the laser needs to pass.
+Hollow Red Circle: The end point the laser needs to pass
 
-Solid Red Circle: The place where the laser is emitted.
+Solid Red Circle: The place where the laser is emitted
 
-Red Line: The optical path of the laser.
+Red Line: The optical path of the laser
 
 5. File generation
-Codes were written in parts and assembled into a final file (final name of the file) All other codes are in the subsequent branches.
+Codes were written in parts and assembled into a final file (lazor project24) All other codes are in the subsequent branches.
 
 6. Runtime
 It takes xx seconds to run the code
 
 7. Contribution: We all cooperate to finish the rest of the project together
 
-Shavier: Identifies logic for class GameBoard and(updating it)
+Shavier: Identifies logic for class GameBoard and(updating it), wrote, modified and verified main.py
 
 Gabriele: Verification (bff files), Validation (Verified logic for the code), 
 
