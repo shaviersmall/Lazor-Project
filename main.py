@@ -1,6 +1,6 @@
 import numpy as np
 import time
-start = time.time()
+from itertools import permutations
 
 class Block:
     '''
@@ -143,32 +143,81 @@ class GameBoard: #Remaining work: update GameBoard to take in block types
 
 
 class Solver:
-    def __init__(self, grid):
-        grid = self.grid
+    def __init__(self, game_board):
+       self.grid = game_board.grid
+        self.blocks = game_board.blocks
+        self.laser_pts = game_board.laser_pts
+        self.soln_pts = game_board.soln_pts
+
+   def get_open_positions(self):
+        open_positions = [(x, y) for y, row in enumerate(self.grid) for x, cell in enumerate(row) if cell == 'o']
+        return open_positions
+
+    def generate_block_combinations(self):
+        blocks_to_place = []
+        for block_type, count in self.blocks.items():
+            blocks_to_place.extend([block_type] * count)
+        return blocks_to_place
 
     def move_blocks(self):
-        pass
-        #initialize positions of open spaces and amounts of movable blocks
+        open_positions = self.get_open_positions()
+        blocks_to_place = self.generate_block_combinations()
+        for block_placement in permutations(open_positions, len(blocks_to_place)):
+            config = {}
+            for block, position in zip(blocks_to_place, block_placement):
+                config[position] = block
+            yield config
 
-    def move_laser(self):
-        pass
-        #move laser based on fixed and movable block types -> x + dx, y + dy based on Block subclass
+    def apply_configuration(self, config):
+        board_copy = self.grid.copy()
+        for pos, block_type in config.items():
+            board_copy[pos[1]][pos[0]] = block_type
+        return board_copy
 
-    def solve(self): #implement some type of algo (depth first search?) to move the blocks so that the lasers bounce off and hit solution points
-        pass 
-        #probably call on read_board again to print the solution board
-        #include a return False if board cannot be solved and error messages
+     def move_laser(self, start_pos, direction, board):
+        x, y = start_pos
+        dx, dy = direction
+        path = []
+        while (0 <= x < board.shape[1]) and (0 <= y < board.shape[0]):
+            path.append((x, y))
+            current_block = board[y][x]
+            if current_block == 'B':  # Opaque
+                break
+            elif current_block == 'A':  # Reflect
+                dx, dy = -dy, dx
+            elif current_block == 'C':  # Refract
+                dx, dy = -dy, dx
+            x, y = x + dx, y + dy
+        return path
+
+    def solve(self):
+        for block_config in self.move_blocks():
+            board = self.apply_configuration(block_config)
+            hit_points = set()
+            for laser_start, direction in self.laser_pts:
+                hit_points.update(self.move_laser(laser_start, direction, board))
+            if all(target in hit_points for target in self.soln_pts):
+                print("Solution found!")
+                return board, block_config
+        print("No solution found.")
+        return None, None
 
     def check_solution(self): #if laser_pos == soln_pos
-        pass
+        return all(point in hit_points for point in self.grid.soln_pts)
+    
 
-        
 if __name__ == '__main__':
-    x = GameBoard('tiny_5.bff')
-    print(x)
-
-    #solution = Solve('tiny_5.bff')
-
-end = time.time() - start
-print(end)
+    start = time.time()
+    board = GameBoard('tiny_5.bff')
+    print(board)
+    
+    solver = Solver(board)
+    solution, config = solver.solve()
+    if solution:
+        print("Final board configuration with solution:")
+        print(np.array2string(solution))
+        print("Block configuration:", config)
+    end = time.time() - start
+    print(end)
+        
     
