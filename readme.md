@@ -58,12 +58,12 @@ Solid Red Circle: The place where the laser is emitted
 Red Line: The optical path of the laser
 
 5. File generation
-Codes were written in parts and assembled into a final file (lazor project24) All other codes are in the subsequent branches.
+Codes were written in parts and assembled into a final file (Lazor Project 24.py) All other codes are in the subsequent branches.
 
 6. Runtime
 It takes xx seconds to run the code
 
-7. Contribution: We all cooperate to finish the rest of the project together
+7. Contribution: We all cooperated to finish the rest of the project together
 
 Shavier: Identifies logic for class GameBoard and(updating it), Methodology (Identified logic for refract block), Software (Implemented code for reading BFF files)
 
