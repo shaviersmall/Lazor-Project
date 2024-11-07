@@ -65,11 +65,11 @@ It takes xx seconds to run the code
 
 7. Contribution: We all cooperate to finish the rest of the project together
 
-Shavier: Identifies logic for class GameBoard and(updating it), wrote, modified and verified main.py
+Shavier: Identifies logic for class GameBoard and(updating it), Methodology (Identified logic for refract block), Software (Implemented code for reading BFF files)
 
-Gabriele: Verification (bff files), Validation (Verified logic for the code) 
+Gabriele: Software (Implemented code for refract block), Verification (bff files), Validation (Verified logic for the code) 
 
-Vasuudhaa: Input, output of code, Readme.md (description of lazor project), Validation (Verified bff files)
+Vasuudhaa: Readme.md (description of lazor project), Software (Implemented code for reading BFF files), Validation (Verified edge cases)
 
 
 
