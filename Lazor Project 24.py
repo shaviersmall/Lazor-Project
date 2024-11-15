@@ -28,24 +28,20 @@ class Block:
 
 class OpaqueBlock(Block):
     def interactions(self, laser_direction):
-        return None #Laser stops at block
+        return [] #Laser stops at block
     
 class ReflectBlock(Block):
     def interactions(self, laser_direction):
-        #Laser goes through in same direction and reflects at 90 degrees
         dx, dy = laser_direction
-        slope = dy / dx
-        new_slope = - dx / dy
+        # Reflect diagonally
+        return [(-dy, dx)] if dx != 0 and dy != 0 else [(-dx, dy), (dx, -dy)]
 
-
-        return (dx,dy), (dy, -dx) #Two returns: laser going in same direction and slope flipped by 90 degrees
     
 class RefractBlock(Block):
-    #Laser refracts 90 degrees
     def interactions(self, laser_direction):
-        dx, dy = laser_direction 
-
-        return (dy, -dx) #Laser refracts 90 degrees from original direction
+        dx, dy = laser_direction
+        # Refract laser: continue forward and reflect diagonally
+        return [(dx, dy), (-dy, dx), (dy, -dx)]
 
 class OBlock(Block):
     def interactions(self, laser_direction):
