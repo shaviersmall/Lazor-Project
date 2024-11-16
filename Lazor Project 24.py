@@ -59,7 +59,7 @@ class XBlock(Block):
 
 class GameBoard: 
     ''' 
-    Class to read, initialize, and create game board based on the file given.
+    Class to read bff file, initialize, and create game board based on the file given.
 
     '''
     def __init__(self, grid_file, width = 500, height = 500):
@@ -135,7 +135,7 @@ class GameBoard:
                     block_def = line.split()
                     if len(block_def) == 2:
                         block_type = block_def[0]
-                        count = int(block_def[1])  # Convert count to integer here
+                        count = int(block_def[1]) 
                         self.block_dict[block_type] = count
         
         self.grid = np.array(self.grid)
@@ -157,6 +157,9 @@ class GameBoard:
 
 
 class Solver:
+    ''' 
+    A class containing the game logic and aspectss needed to solve the game board.
+    '''
     def __init__(self, game_board):
        self.grid = game_board.grid
        self.blocks = game_board.block_dict
@@ -164,11 +167,13 @@ class Solver:
        self.soln_pts = game_board.soln_pts 
 
     def get_open_positions(self):
+        # All available positions on board (marked with an O)
         open_positions = [(x, y) for y, row in enumerate(self.grid) for x, 
                           cell in enumerate(row) if isinstance(cell, OBlock)]
         return open_positions
 
     def generate_block_combinations(self):
+        # Creates a list of possible block combinations to use
         blocks_to_place = []
         for block_type, count in self.blocks.items():
             blocks_to_place.extend([block_type] * count)
@@ -188,12 +193,14 @@ class Solver:
             yield config
 
     def apply_configuration(self, config):
+        # Creates a copy of the board suitable for solving
         board_copy = deepcopy(self.grid)
         for pos, block_type in config.items():
-            board_copy[pos[1]][pos[0]] = block_type()  # Instantiate the block
+            board_copy[pos[1]][pos[0]] = block_type() 
         return board_copy
 
     def move_laser(self, start_pos, direction, board):
+        # Defines how the laser moves on the board and when interacting with blocks
         x, y = start_pos
         dx, dy = direction
         path = set()
@@ -213,6 +220,7 @@ class Solver:
         return path
 
     def solve(self):
+        # APplies all the logic to solve the board
         for block_config in self.move_blocks():
             board = self.apply_configuration(block_config)
             hit_points = set()
@@ -226,9 +234,11 @@ class Solver:
         return None, None
 
     def check_solution(self, hit_points):
+        # Checks if all points have been hit
         return all(point in hit_points for point in self.soln_pts)
 
 def save_solution(self, solution_grid, block_config, output_file='solution.bff'):
+    # Saves solution to a bff file
     with open(output_file, 'w') as f:
         f.write("# Solution File\n\n")
         f.write("GRID START\n")
